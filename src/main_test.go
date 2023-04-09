@@ -1,6 +1,7 @@
 package main
 
 import (
+	"math"
 	"testing"
 )
 
@@ -29,15 +30,8 @@ func TestComment(t *testing.T) {
 		},
 	} {
 		out := Compare(input.dataFirst, input.dataSecond, input.format)
-		if Abs(out-input.matching) > EPS_PROSSENT {
+		if math.Abs(out-input.matching) > EPS_PROSSENT {
 			t.Errorf("Acc: %v\n Exs: %v\n", out, input.matching)
 		}
 	}
-}
-
-func Abs(f float64) float64 {
-	if f < 0 {
-		return -f
-	}
-	return f
 }

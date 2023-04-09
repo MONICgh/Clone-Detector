@@ -94,12 +94,12 @@ func Compare(dataA string, dataB string, format string) float64 {
 
 	var res float64 = 1.0
 	for _, m := range diffMatching {
-		fmt.Println(m.nameDetect, ":", m.prosent*100, "%")
+		fmt.Printf("%v: %.2f%s\n", m.nameDetect, m.prosent*100, "%")
 		res *= (1 - m.prosent)
 	}
 	matching = (1 - res) * 100
 
-	fmt.Println("Match Probability: ", matching, "%")
+	fmt.Printf("Match Probability: %.2f%s\n", matching, "%")
 	return matching
 }
 
