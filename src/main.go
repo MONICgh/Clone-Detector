@@ -35,7 +35,7 @@ func readFile(fileName string) ([]byte, error) {
 
 var (
 	format   string
-	matching float32 = 0.0
+	matching float64 = 0.0
 )
 
 func main() {
@@ -66,12 +66,74 @@ func main() {
 	Compare(string(dataA), string(dataB), format)
 }
 
-func Compare(dataA string, dataB string, format string) float32 {
+func Compare(dataA string, dataB string, format string) float64 {
 
-	if dataA == dataB {
-		matching = 100.0
-	}
+	// if dataA == dataB {
+	// 	matching = 100.0
+	// }
+
+	matching = detectTwoBlocks(dataA, dataB) * 100
 
 	fmt.Println("Match Probability: ", matching, "%")
 	return matching
+}
+
+func splitCodeByBlocks(code string) []string {
+	panic("Split code on blocs")
+}
+
+// prosent: len(match)/len(block)
+// s, t -- string: code clone
+func detectTwoBlocks(s string, t string) float64 {
+
+	var notSee map[rune]bool = map[rune]bool{
+		' ':  true,
+		'\n': true,
+		'\t': true,
+	}
+
+	var dp [][]int
+	// add normal inisalisation
+	for i := 0; i <= len(s); i++ {
+		var list []int
+		for j := 0; j <= len(t); j++ {
+			list = append(list, 0)
+		}
+		dp = append(dp, list)
+	}
+
+	for i, symFirst := range s {
+		for j, symSec := range t {
+			dp[i+1][j+1] = max(dp[i][j+1], dp[i+1][j])
+			if symFirst == symSec && !notSee[symFirst] {
+				dp[i+1][j+1] = max(dp[i+1][j+1], dp[i][j]+1)
+			}
+		}
+	}
+
+	var minStr string
+	if len(s) < len(t) {
+		minStr = s
+	} else {
+		minStr = t
+	}
+	lenNotBlank := 0
+	for _, sym := range minStr {
+		if !notSee[sym] {
+			lenNotBlank++
+		}
+	}
+
+	return float64(dp[len(s)][len(t)]) / float64(lenNotBlank)
+}
+
+func max(a int, b int) int {
+	if a > b {
+		return a
+	}
+	return b
+}
+
+func min(a int, b int) int {
+	return -max(-a, -b)
 }
