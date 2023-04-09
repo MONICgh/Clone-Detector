@@ -38,6 +38,12 @@ var (
 	matching float64 = 0.0
 )
 
+type Detect struct {
+	prosent    float64
+	isClone    bool
+	nameDetect string
+}
+
 func main() {
 
 	if len(os.Args) < 3 {
@@ -68,11 +74,28 @@ func main() {
 
 func Compare(dataA string, dataB string, format string) float64 {
 
-	// if dataA == dataB {
-	// 	matching = 100.0
-	// }
+	var diffMatching []Detect
+	diffMatching = append(diffMatching,
+		Detect{
+			prosent:    detectTwoBlocks(dataA, dataB),
+			nameDetect: "Detect dp",
+		})
 
-	matching = detectTwoBlocks(dataA, dataB) * 100
+	diffMatching = append(diffMatching,
+		Detect{
+			prosent:    detectCloneLines(dataA, dataB),
+			nameDetect: "Dublicate line",
+		})
+	if diffMatching[len(diffMatching)-1].prosent > 0.7 {
+		diffMatching[len(diffMatching)-1].isClone = true
+	}
+
+	var res float64 = 1.0
+	for _, m := range diffMatching {
+		fmt.Println(m.nameDetect, ":", m.prosent*100, "%")
+		res *= (1 - m.prosent)
+	}
+	matching = (1 - res) * 100
 
 	fmt.Println("Match Probability: ", matching, "%")
 	return matching
@@ -93,7 +116,7 @@ func detectTwoBlocks(s string, t string) float64 {
 	}
 
 	var dp [][]int
-	// add normal inisalisation
+	// var dp [len(s)+1][len(t)+1]int
 	for i := 0; i <= len(s); i++ {
 		var list []int
 		for j := 0; j <= len(t); j++ {
@@ -125,6 +148,28 @@ func detectTwoBlocks(s string, t string) float64 {
 	}
 
 	return float64(dp[len(s)][len(t)]) / float64(lenNotBlank)
+}
+
+func detectCloneLines(s string, t string) float64 {
+
+	linesA := strings.Split(s, "\n")
+	linesB := strings.Split(t, "\n")
+
+	res := 0
+	all := 0
+	for _, lineA := range linesA {
+		if lineA != "" {
+			all++
+		}
+		for _, lineB := range linesB {
+			if lineA == lineB && lineA != "" {
+				res++
+				continue
+			}
+		}
+	}
+
+	return float64(res) / float64(all)
 }
 
 func max(a int, b int) int {

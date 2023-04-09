@@ -15,7 +15,7 @@ var (
 	matching float32 = 0.0
 )
 
-func deleteComments(block string) string {
+func DeleteComments(block string) string {
 
 	lines := strings.Split(block, "\n")
 	res := ""
