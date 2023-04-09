@@ -1,7 +1,7 @@
 ### Пример запуск программы:
 
 ```Console
-go run src/main.go src/simple_update.go tests/taskCF.cpp tests/taskCF_clone.cpp
+go run ./src/... tests/taskCF.cpp tests/taskCF_clone.cpp
 ```
 
 ```Console

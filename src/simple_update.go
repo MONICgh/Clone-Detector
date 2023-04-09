@@ -10,11 +10,6 @@ var langComment = map[string]string{
 	"py":  "#",
 }
 
-// var (
-// 	format   string
-// 	matching float32 = 0.0
-// )
-
 func DeleteComments(block string) string {
 
 	lines := strings.Split(block, "\n")
@@ -33,4 +28,15 @@ func DeleteComments(block string) string {
 func AddComments(blockA []byte, blockB []byte) bool {
 
 	return false
+}
+
+func Max(a int, b int) int {
+	if a > b {
+		return a
+	}
+	return b
+}
+
+func Min(a int, b int) int {
+	return -Max(-a, -b)
 }
