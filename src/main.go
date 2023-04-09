@@ -74,6 +74,8 @@ func main() {
 
 func Compare(dataA string, dataB string, format string) float64 {
 
+	dataA = DeleteComments(dataA)
+
 	var diffMatching []Detect
 	diffMatching = append(diffMatching,
 		Detect{

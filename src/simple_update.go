@@ -10,10 +10,10 @@ var langComment = map[string]string{
 	"py":  "#",
 }
 
-var (
-	format   string
-	matching float32 = 0.0
-)
+// var (
+// 	format   string
+// 	matching float32 = 0.0
+// )
 
 func DeleteComments(block string) string {
 
