@@ -8,10 +8,10 @@ import (
 	"strings"
 )
 
-const FILE_SIZE = 10 << 15
+const FILE_SIZE = 10 << 21
 const MinMatching = 90.0
 
-func readFile(fileName string) ([]byte, error) {
+func ReadFile(fileName string) ([]byte, error) {
 
 	f, err := os.Open(fileName)
 
@@ -26,7 +26,6 @@ func readFile(fileName string) ([]byte, error) {
 		case io.EOF:
 			break
 		case nil:
-			// println(string(buf[:n]))
 			return buf[:n], nil
 		default:
 			fmt.Println(err)
@@ -63,15 +62,25 @@ func boolAnsCloneDetect(fileA string, fileB string) bool {
 	return false
 }
 
+func boolAnsCompare(dataA string, dataB string) bool {
+	if Compare(dataA, dataB, "") >= MinMatching {
+		return true
+	}
+	return false
+}
+
 func mainFiles(fileA string, fileB string) float64 {
 
-	dataA, err := readFile(fileA)
+	dataA, err := ReadFile(fileA)
 	if err != nil {
 		log.Println("Wrong read first file:", fileA, err)
+		os.Exit(0)
 	}
-	dataB, err := readFile(fileB)
+
+	dataB, err := ReadFile(fileB)
 	if err != nil {
 		log.Println("Wrong read second file:", fileB, err)
+		os.Exit(0)
 	}
 
 	formatA := strings.Split(fileA, ".")[1]
@@ -109,11 +118,11 @@ func Compare(dataA string, dataB string, format string) float64 {
 
 	var res float64 = 1.0
 	for _, m := range diffMatching {
-		fmt.Printf("%v: %.2f\n", m.nameDetect, m.prosent*100)
+		// log.Printf("%v: %.2f\n", m.nameDetect, m.prosent*100)
 		res *= (1 - m.prosent)
 	}
 	matching = (1 - res) * 100
 
-	fmt.Printf("Match Probability: %.2f\n", matching)
+	// log.Printf("Match Probability: %.2f\n", matching)
 	return matching
 }

@@ -1,13 +1,18 @@
 package main
 
 import (
+	"encoding/json"
+	"log"
 	"math"
+	"os"
+	"strings"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
 )
 
 const EPS_PROSSENT float64 = 2.5
+const MaxCountTest = 1000
 
 type testCase struct {
 	dataFirst  string
@@ -55,4 +60,95 @@ func TestSimpleDataBase(t *testing.T) {
 			"main.go",
 			"simple_update.go",
 		))
+}
+
+type CodeProgramm struct {
+	Code string `json:"func"`
+	Idx  string `json:"idx"`
+}
+
+type Test struct {
+	indFirst  string
+	indSecond string
+	ans       bool
+}
+
+func readJSONL(fileName string) map[string]string {
+	dataBase := make(map[string]string)
+
+	data, err := ReadFile(fileName)
+	if err != nil {
+		log.Println("Wrong data base file:", fileName, err)
+		os.Exit(0)
+	}
+
+	listJSON := strings.Split(string(data), "\n")
+	for _, elem := range listJSON {
+
+		var code CodeProgramm
+		json.Unmarshal([]byte(elem), &code)
+		dataBase[code.Idx] = code.Code
+	}
+
+	return dataBase
+}
+
+func readTest(fileName string) []Test {
+	var listTest []Test
+
+	data, err := ReadFile(fileName)
+	if err != nil {
+		log.Println("Wrong test file read:", fileName, err)
+		os.Exit(0)
+	}
+
+	for i, elem := range strings.Split(string(data), "\n") {
+
+		if i >= MaxCountTest {
+			break
+		}
+
+		elems := strings.Fields(elem)
+
+		if len(elems) != 3 {
+			log.Println("Wrong size test", elem, " i: ", i)
+			os.Exit(0)
+		}
+
+		oneTest := Test{
+			indFirst:  elems[0],
+			indSecond: elems[1],
+		}
+
+		if elems[2] == "1" {
+			oneTest.ans = true
+		} else {
+			oneTest.ans = false
+		}
+
+		listTest = append(listTest, oneTest)
+	}
+
+	return listTest
+}
+
+func TestDataBase(t *testing.T) {
+	dataBase := readJSONL("../CodeXGLUE/Code-Code/Clone-detection-BigCloneBench/dataset/data.jsonl")
+	if len(dataBase) < 9127 {
+		log.Println("Not read all data base")
+		os.Exit(0)
+	}
+	tests := readTest("../CodeXGLUE/Code-Code/Clone-detection-BigCloneBench/dataset/test.txt")
+
+	ass := 0
+	for _, test := range tests {
+		if boolAnsCompare(
+			dataBase[test.indFirst],
+			dataBase[test.indSecond],
+		) == test.ans {
+			ass++
+		}
+	}
+
+	log.Printf("%.2f\n", float64(ass)/float64(len(tests))*100)
 }
