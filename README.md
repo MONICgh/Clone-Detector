@@ -1,16 +1,17 @@
 ### Пример запуск программы:
 
 ```Console
-go run ./src/... tests/taskCF.cpp tests/taskCF_clone.cpp
+go run ./src/... <file> <clone file>
 ```
 
 ```Console
-Detect dp : 85.46666666666667 %
-Dublicate line : 80.64516129032258 %
-Match Probability:  97.18709677419355 %
+Detect dp : 85.47
+Dublicate line : 80.65
+Match Probability:  97.19
 ```
 
 ### Запуск автотестов:
 ```Console
 go test ./src/...
 ```
+Тесты на общую работу и на расстояние Левенштейна
