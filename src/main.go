@@ -9,6 +9,7 @@ import (
 )
 
 const FILE_SIZE = 10 << 15
+const MinMatching = 90.0
 
 func readFile(fileName string) ([]byte, error) {
 
@@ -25,6 +26,7 @@ func readFile(fileName string) ([]byte, error) {
 		case io.EOF:
 			break
 		case nil:
+			// println(string(buf[:n]))
 			return buf[:n], nil
 		default:
 			fmt.Println(err)
@@ -51,17 +53,29 @@ func main() {
 		os.Exit(0)
 	}
 
-	dataA, err := readFile(os.Args[1])
-	if err != nil {
-		log.Println("Wrong read first file:", os.Args[1], err)
+	mainFiles(os.Args[1], os.Args[2])
+}
+
+func boolAnsCloneDetect(fileA string, fileB string) bool {
+	if mainFiles(fileA, fileB) >= MinMatching {
+		return true
 	}
-	dataB, err := readFile(os.Args[2])
+	return false
+}
+
+func mainFiles(fileA string, fileB string) float64 {
+
+	dataA, err := readFile(fileA)
 	if err != nil {
-		log.Println("Wrong read second file:", os.Args[2], err)
+		log.Println("Wrong read first file:", fileA, err)
+	}
+	dataB, err := readFile(fileB)
+	if err != nil {
+		log.Println("Wrong read second file:", fileB, err)
 	}
 
-	formatA := strings.Split(os.Args[1], ".")[1]
-	formatB := strings.Split(os.Args[2], ".")[1]
+	formatA := strings.Split(fileA, ".")[1]
+	formatB := strings.Split(fileB, ".")[1]
 
 	if formatA != formatB {
 		log.Println("Wrong languges:", formatA, "not equale", formatB)
@@ -69,12 +83,13 @@ func main() {
 	}
 	format = formatA
 
-	Compare(string(dataA), string(dataB), format)
+	return Compare(string(dataA), string(dataB), format)
 }
 
 func Compare(dataA string, dataB string, format string) float64 {
 
-	dataA = DeleteComments(dataA)
+	// dataA = DeleteComments(dataA)
+	// dataB = DeleteComments(dataB)
 
 	var diffMatching []Detect
 	diffMatching = append(diffMatching,
@@ -94,11 +109,11 @@ func Compare(dataA string, dataB string, format string) float64 {
 
 	var res float64 = 1.0
 	for _, m := range diffMatching {
-		fmt.Printf("%v: %.2f%s\n", m.nameDetect, m.prosent*100, "%")
+		fmt.Printf("%v: %.2f\n", m.nameDetect, m.prosent*100)
 		res *= (1 - m.prosent)
 	}
 	matching = (1 - res) * 100
 
-	fmt.Printf("Match Probability: %.2f%s\n", matching, "%")
+	fmt.Printf("Match Probability: %.2f\n", matching)
 	return matching
 }

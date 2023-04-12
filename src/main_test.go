@@ -3,6 +3,8 @@ package main
 import (
 	"math"
 	"testing"
+
+	"github.com/stretchr/testify/assert"
 )
 
 const EPS_PROSSENT float64 = 2.5
@@ -34,4 +36,23 @@ func TestComment(t *testing.T) {
 			t.Errorf("Acc: %v\n Exs: %v\n", out, input.matching)
 		}
 	}
+}
+
+func TestSimpleDataBase(t *testing.T) {
+	assert := assert.New(t)
+	assert.True(
+		boolAnsCloneDetect(
+			"../CodeXGLUE/Code-Code/code-refinement/evaluator/predictions.txt",
+			"../CodeXGLUE/Code-Code/code-refinement/evaluator/references.txt",
+		))
+	assert.True(
+		boolAnsCloneDetect(
+			"../tests/taskCF.cpp",
+			"../tests/taskCF_clone.cpp",
+		))
+	assert.False(
+		boolAnsCloneDetect(
+			"main.go",
+			"simple_update.go",
+		))
 }
