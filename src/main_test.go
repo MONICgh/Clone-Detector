@@ -93,7 +93,7 @@ func readJSONL(fileName string) map[string]string {
 	return dataBase
 }
 
-func readTest(fileName string) []Test {
+func readTest(fileName string, maxCountTest int) []Test {
 	var listTest []Test
 
 	data, err := ReadFile(fileName)
@@ -104,7 +104,7 @@ func readTest(fileName string) []Test {
 
 	for i, elem := range strings.Split(string(data), "\n") {
 
-		if i >= MaxCountTest {
+		if i >= maxCountTest {
 			break
 		}
 
@@ -132,13 +132,13 @@ func readTest(fileName string) []Test {
 	return listTest
 }
 
-func TestDataBase(t *testing.T) {
+func DataBase(t *testing.T, fileName string, maxCountTest int) {
 	dataBase := readJSONL("../CodeXGLUE/Code-Code/Clone-detection-BigCloneBench/dataset/data.jsonl")
 	if len(dataBase) < 9127 {
 		log.Println("Not read all data base")
 		os.Exit(0)
 	}
-	tests := readTest("../CodeXGLUE/Code-Code/Clone-detection-BigCloneBench/dataset/test.txt")
+	tests := readTest("../CodeXGLUE/Code-Code/Clone-detection-BigCloneBench/dataset/"+fileName, maxCountTest)
 
 	ass := 0
 	for _, test := range tests {
@@ -151,4 +151,16 @@ func TestDataBase(t *testing.T) {
 	}
 
 	log.Printf("%.2f\n", float64(ass)/float64(len(tests))*100)
+}
+
+func TestDataBaseTest(t *testing.T) {
+	DataBase(t, "test.txt", MaxCountTest)
+}
+
+func TestDataBaseTrain(t *testing.T) {
+	DataBase(t, "train.txt", 50)
+}
+
+func TestDataBaseValid(t *testing.T) {
+	DataBase(t, "valid.txt", MaxCountTest)
 }

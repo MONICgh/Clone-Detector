@@ -35,8 +35,9 @@ func ReadFile(fileName string) ([]byte, error) {
 }
 
 var (
-	format   string
-	matching float64 = 0.0
+	format    string
+	matching  float64 = 0.0
+	isConsole bool    = false
 )
 
 type Detect struct {
@@ -51,6 +52,8 @@ func main() {
 		log.Println("Need two file data")
 		os.Exit(0)
 	}
+
+	isConsole = true
 
 	mainFiles(os.Args[1], os.Args[2])
 }
@@ -118,11 +121,15 @@ func Compare(dataA string, dataB string, format string) float64 {
 
 	var res float64 = 1.0
 	for _, m := range diffMatching {
-		// log.Printf("%v: %.2f\n", m.nameDetect, m.prosent*100)
+		if isConsole {
+			log.Printf("%v: %.2f\n", m.nameDetect, m.prosent*100)
+		}
 		res *= (1 - m.prosent)
 	}
 	matching = (1 - res) * 100
 
-	// log.Printf("Match Probability: %.2f\n", matching)
+	if isConsole {
+		log.Printf("Match Probability: %.2f\n", matching)
+	}
 	return matching
 }
