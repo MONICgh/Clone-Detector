@@ -93,7 +93,7 @@ func readJSONL(fileName string) map[string]string {
 	return dataBase
 }
 
-func readTest(fileName string, maxCountTest int) []Test {
+func readTest(fileName string, maxCountTest int, stringStartPar ...int) []Test {
 	var listTest []Test
 
 	data, err := ReadFile(fileName)
@@ -102,9 +102,14 @@ func readTest(fileName string, maxCountTest int) []Test {
 		os.Exit(0)
 	}
 
+	stringStart := 0
+	if len(stringStartPar) > 0 {
+		stringStart = stringStartPar[0]
+	}
+
 	for i, elem := range strings.Split(string(data), "\n") {
 
-		if i >= maxCountTest {
+		if i >= stringStart+maxCountTest {
 			break
 		}
 
@@ -115,18 +120,20 @@ func readTest(fileName string, maxCountTest int) []Test {
 			os.Exit(0)
 		}
 
-		oneTest := Test{
-			indFirst:  elems[0],
-			indSecond: elems[1],
-		}
+		if i >= stringStart {
+			oneTest := Test{
+				indFirst:  elems[0],
+				indSecond: elems[1],
+			}
 
-		if elems[2] == "1" {
-			oneTest.ans = true
-		} else {
-			oneTest.ans = false
-		}
+			if elems[2] == "1" {
+				oneTest.ans = true
+			} else {
+				oneTest.ans = false
+			}
 
-		listTest = append(listTest, oneTest)
+			listTest = append(listTest, oneTest)
+		}
 	}
 
 	return listTest
