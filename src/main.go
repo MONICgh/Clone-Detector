@@ -9,7 +9,7 @@ import (
 )
 
 const FILE_SIZE = 10 << 21
-const MinMatching = 90.0
+const MinMatching = 70.0 //90.0
 
 func ReadFile(fileName string) ([]byte, error) {
 
@@ -66,6 +66,7 @@ func boolAnsCloneDetect(fileA string, fileB string) bool {
 }
 
 func boolAnsCompare(dataA string, dataB string) bool {
+
 	if Compare(dataA, dataB, "") >= MinMatching {
 		return true
 	}
@@ -104,19 +105,34 @@ func Compare(dataA string, dataB string, format string) float64 {
 	// dataB = DeleteComments(dataB)
 
 	var diffMatching []Detect
-	diffMatching = append(diffMatching,
-		Detect{
-			prosent:    detectTwoBlocks(dataA, dataB),
-			nameDetect: "Detect dp",
-		})
+	// diffMatching = append(diffMatching,
+	// 	Detect{
+	// 		prosent:    detectTwoBlocks(dataA, dataB),
+	// 		nameDetect: "Detect dp",
+	// 	})
+
+	// diffMatching = append(diffMatching,
+	// 	Detect{
+	// 		prosent:    detectCloneLines(dataA, dataB),
+	// 		nameDetect: "Dublicate line",
+	// 	})
 
 	diffMatching = append(diffMatching,
 		Detect{
-			prosent:    detectCloneLines(dataA, dataB),
-			nameDetect: "Dublicate line",
+			prosent:    detectCloneLineWithLevenshtain(dataA, dataB),
+			nameDetect: "Dublicate line with Levenshtain",
 		})
-	if diffMatching[len(diffMatching)-1].prosent > 0.7 {
+	if diffMatching[len(diffMatching)-1].prosent < 0.7 {
 		diffMatching[len(diffMatching)-1].isClone = true
+	}
+
+	if len(diffMatching) == 1 {
+		if diffMatching[0].nameDetect == "Dublicate line with Levenshtain" {
+			if diffMatching[0].isClone {
+				return 1.0
+			}
+			return 0.0
+		}
 	}
 
 	var res float64 = 1.0

@@ -12,7 +12,7 @@ import (
 )
 
 const EPS_PROSSENT float64 = 2.5
-const MaxCountTest = 1000
+const MaxCountTest = 415416
 
 type testCase struct {
 	dataFirst  string
@@ -45,7 +45,7 @@ func TestComment(t *testing.T) {
 
 func TestSimpleDataBase(t *testing.T) {
 	assert := assert.New(t)
-	assert.True(
+	assert.False(
 		boolAnsCloneDetect(
 			"../CodeXGLUE/Code-Code/code-refinement/evaluator/predictions.txt",
 			"../CodeXGLUE/Code-Code/code-refinement/evaluator/references.txt",
@@ -139,13 +139,14 @@ func readTest(fileName string, maxCountTest int, stringStartPar ...int) []Test {
 	return listTest
 }
 
-func DataBase(t *testing.T, fileName string, maxCountTest int) {
+func DataBase(t *testing.T, fileName string, maxCountTest int, stringStartPar ...int) {
 	dataBase := readJSONL("../CodeXGLUE/Code-Code/Clone-detection-BigCloneBench/dataset/data.jsonl")
 	if len(dataBase) < 9127 {
 		log.Println("Not read all data base")
 		os.Exit(0)
 	}
-	tests := readTest("../CodeXGLUE/Code-Code/Clone-detection-BigCloneBench/dataset/"+fileName, maxCountTest)
+
+	tests := readTest("../CodeXGLUE/Code-Code/Clone-detection-BigCloneBench/dataset/"+fileName, maxCountTest, stringStartPar...)
 
 	ass := 0
 	for _, test := range tests {
@@ -165,7 +166,8 @@ func TestDataBaseTest(t *testing.T) {
 }
 
 func TestDataBaseTrain(t *testing.T) {
-	DataBase(t, "train.txt", 50)
+	// DataBase(t, "train.txt", 700000)
+	DataBase(t, "train.txt", 201000, 700001)
 }
 
 func TestDataBaseValid(t *testing.T) {
