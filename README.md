@@ -1,13 +1,7 @@
-### Пример запуск программы:
+### Запуск программы:
 
 ```Console
 go run ./src/... <file> <clone file>
-```
-
-```Console
-Detect dp : 85.47
-Dublicate line : 80.65
-Match Probability:  97.19
 ```
 
 ### Запуск автотестов:
@@ -15,3 +9,10 @@ Match Probability:  97.19
 go test ./src/...
 ```
 Тесты на общую работу и на расстояние Левенштейна
+
+
+### Результаты на тестовых данных:
+
+- `test.txt` 86.32
+- `train.txt` 49.96
+- `valid.txt` 87.04
