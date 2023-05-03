@@ -31,3 +31,20 @@ func TestMediumLevenshtain(t *testing.T) {
 	assert.Equal(Levenshtain(s1, s3), 1, "dist("+s1+", "+s3+"), must be 1")
 	assert.Equal(Levenshtain(s3, s2), 2, "dist("+s3+", "+s2+"), must be 2")
 }
+
+func TestDeferLenLevenshtain(t *testing.T) {
+
+	assert := assert.New(t)
+
+	s1 := " 1 "
+	s2 := " 1 \n 1 \n 1 \n 2 "
+	s3 := " 3 \n 3 \n 2 \n 2 \n 2 \n 2 \n 2 \n 2 "
+
+	// fmt.Println(Levenshtain(s1, s3))
+	assert.Equal(Levenshtain(s1, s2), 3, "dist("+s1+", "+s2+"), wrong len")
+	assert.Equal(Levenshtain(s2, s1), 3, "dist("+s2+", "+s1+"), wrong len")
+	assert.Equal(Levenshtain(s1, s3), 8, "dist("+s1+", "+s3+"), wrong len")
+	assert.Equal(Levenshtain(s3, s1), 8, "dist("+s3+", "+s1+"), wrong len")
+	assert.Equal(Levenshtain(s3, s2), 7, "dist("+s3+", "+s2+"), wrong len")
+	assert.Equal(Levenshtain(s2, s3), 7, "dist("+s2+", "+s3+"), wrong len")
+}

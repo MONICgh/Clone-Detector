@@ -68,3 +68,9 @@ func detectCloneLines(s string, t string) float64 {
 
 	return float64(res) / float64(all)
 }
+
+func detectCloneLineWithLevenshtain(s string, t string) float64 {
+	numClone := Levenshtain(s, t)
+	return float64(numClone) /
+		float64(Min(len(strings.Split(s, "\n")), len(strings.Split(t, "\n"))))
+}
