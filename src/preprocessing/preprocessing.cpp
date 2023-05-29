@@ -1,6 +1,4 @@
 #include <bits/stdc++.h>
-// #include <string_view>
-// #include <vector>
 
 namespace {
 
@@ -104,5 +102,21 @@ int main (int argc, char* argv[]) {
   }
 
   std::string file_code = argv[1], file_out = argv[2];
+
+  std::ifstream t(file_code);
+  t.seekg(0, std::ios::end);
+  size_t size = t.tellg();
+  std::string buffer(size, ' ');
+  t.seekg(0);
+  t.read(&buffer[0], size); 
+
+  std::vector<std::string> ans = normalize(buffer);
+
+  freopen("output.txt", "w", stdout);
+  for (auto s : ans) {
+    std::cout << s;
+  }
+  fclose(stdout);
+
   return 0;
 }
