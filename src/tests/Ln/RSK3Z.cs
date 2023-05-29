@@ -1,0 +1,20 @@
+﻿using System.Diagnostics;
+using Task2;
+
+var pair1 = new ImmutablePair<int, int>(10, 100);
+Debug.Assert(pair1.Left == 10);
+Debug.Assert(pair1.Right == 100);
+var pair2 = pair1.UpdateLeft(20);
+Debug.Assert(pair1.Left == 10);
+Debug.Assert(pair2.Left == 20);
+Debug.Assert(pair2.Right == 100);
+var pair3 = pair2.UpdateRight(200);
+Debug.Assert(pair1.Right == 100);
+Debug.Assert(pair2.Right == 100);
+Debug.Assert(pair3.Right == 200);
+Debug.Assert(pair3.Left == 20);
+var pair4 = pair1.UpdateRight(50);
+Debug.Assert(pair1.Right == 100);
+Debug.Assert(pair4.Right == 50);
+Debug.Assert(pair4.Left == 10);
+Console.WriteLine("All is OK!");
