@@ -161,15 +161,52 @@ func DataBase(t *testing.T, fileName string, maxCountTest int, stringStartPar ..
 	log.Printf("%.2f\n", float64(ass)/float64(len(tests))*100)
 }
 
+func DataBaseResearch(t *testing.T, fileName string, maxCountTest int, stringStartPar ...int) {
+	dataBase := readJSONL("../CodeXGLUE/Code-Code/Clone-detection-BigCloneBench/dataset/data.jsonl")
+	if len(dataBase) < 9127 {
+		log.Println("Not read all data base")
+		os.Exit(0)
+	}
+
+	tests := readTest("../CodeXGLUE/Code-Code/Clone-detection-BigCloneBench/dataset/"+fileName, maxCountTest, stringStartPar...)
+
+	amountTT, amountFF, amountTF, amountFT := 0, 0, 0, 0
+	for _, test := range tests {
+		ansAlgorithm := boolAnsCompare(
+			dataBase[test.indFirst],
+			dataBase[test.indSecond],
+		)
+		switch {
+		case ansAlgorithm && test.ans:
+			amountTT++
+		case !ansAlgorithm && !test.ans:
+			amountFF++
+		case !ansAlgorithm && test.ans:
+			amountFT++
+		case ansAlgorithm && !test.ans:
+			amountTF++
+		}
+	}
+
+	log.Printf(
+		"\nTT : %.2f\nFF : %.2f\nTF : %.2f\nFT : %.2f\n",
+		float64(amountTT)/float64(len(tests))*100,
+		float64(amountFF)/float64(len(tests))*100,
+		float64(amountTF)/float64(len(tests))*100,
+		float64(amountFT)/float64(len(tests))*100,
+	)
+}
+
 func TestDataBaseTest(t *testing.T) {
-	DataBase(t, "test.txt", MaxCountTest)
+	// DataBase(t, "test.txt", MaxCountTest)
+	DataBaseResearch(t, "test.txt", MaxCountTest)
 }
 
 func TestDataBaseTrain(t *testing.T) {
 	// DataBase(t, "train.txt", 700000)
-	DataBase(t, "train.txt", 201000, 700001)
+	DataBaseResearch(t, "train.txt", 201000, 700001)
 }
 
 func TestDataBaseValid(t *testing.T) {
-	DataBase(t, "valid.txt", MaxCountTest)
+	DataBaseResearch(t, "valid.txt", MaxCountTest)
 }

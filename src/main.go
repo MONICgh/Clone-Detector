@@ -122,7 +122,7 @@ func Compare(dataA string, dataB string, format string) float64 {
 			prosent:    detectCloneLineWithLevenshtain(dataA, dataB),
 			nameDetect: "Dublicate line with Levenshtain",
 		})
-	if diffMatching[len(diffMatching)-1].prosent < 0.7 {
+	if diffMatching[len(diffMatching)-1].prosent < 0.9 {
 		diffMatching[len(diffMatching)-1].isClone = true
 	}
 
