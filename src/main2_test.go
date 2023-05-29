@@ -3,6 +3,7 @@ package main
 import (
 	"io/ioutil"
 	"log"
+	"os"
 	"syscall"
 	"testing"
 )
@@ -30,8 +31,35 @@ func connectConsole() {
 	}
 }
 
+func writerTest(fileName string) {
+
+	data, err := ReadFile(fileName)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	f, err := os.Create("preprocessing/input.txt")
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer f.Close()
+	f.Write(data)
+}
+
+func readerTest() []byte {
+	data, err := ReadFile("preprocessing/output.txt")
+	if err != nil {
+		log.Fatal(err)
+	}
+	return data
+}
+
 func TestDataL(t *testing.T) {
+
 	for _, dir := range directory {
+
+		ass := 0
+
 		files, err := ioutil.ReadDir("tests/" + dir)
 		if err != nil {
 			log.Fatal(err)
@@ -43,8 +71,24 @@ func TestDataL(t *testing.T) {
 				if nameA == nameB || nameA[len(nameA)-1] != 's' || nameB[len(nameB)-1] != 's' {
 					continue
 				}
-				//ToDo nameA, nameB
+
+				writerTest("tests/" + dir + "/" + nameA)
+				dataA := readerTest()
+
+				writerTest("tests/" + dir + "/" + nameB)
+				dataB := readerTest()
+
+				if boolAnsCompare(string(dataA), string(dataB)) {
+					ass++
+				}
+
 			}
 		}
+
+		log.Printf(
+			"In derectory %s: %v clones found\n",
+			dir,
+			ass,
+		)
 	}
 }
